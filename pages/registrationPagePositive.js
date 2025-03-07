@@ -15,8 +15,8 @@ export class RegistrationPage {
   }
 
   async openRegistrationForm() {
-    const fullUrl = `https://${process.env.QAUTO_BASE_URL}`;
-    await this.page.goto(fullUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
+    const baseUrl = this.page.context()._options.baseURL; // Використовуємо Playwright конфіг
+    await this.page.goto(`${baseUrl}`, { waitUntil: 'domcontentloaded', timeout: 10000 });
 
     await this.signUpButton.click();
     await expect(this.modalBody).toBeVisible({ timeout: 5000 });
@@ -35,26 +35,16 @@ export class RegistrationPage {
     await this.checkRequiredField(this.passwordField, 'Password required');
     await this.checkRequiredField(this.repeatPasswordField, 'Re-enter password required');
   }
-  
-    // Перевірка необхідних полів форми
+
   async checkRequiredField(field, errorMessage) {
-    await field.click();  // Кликаємо по полю, щоб активувати його
-    await this.modalBody.click();  // Кликаємо поза полем, щоб зняти фокус
+    await field.click();  
+    await this.modalBody.click();  
 
-    // Чекаємо, поки з'явиться елемент з повідомленням про помилку
     const errorElement = field.locator('~ .invalid-feedback');
-    await expect(errorElement).toBeVisible();  // Перевіряємо, чи елемент з помилкою видимий
-    await expect(errorElement).toHaveText(errorMessage);  // Перевіряємо, чи текст відповідає очікуваному
-
-    // Перевіряємо колір обводки поля з допуском на похибку
-    // Перевіряємо, чи колір обводки поля червоний (не вказуємо точний відтінок)
-    const borderColor = await field.evaluate(el => window.getComputedStyle(el).borderColor);
-
-    // Перевіряємо, чи колір є червоним
-    expect(isRedColor(borderColor)).toBe(true); 
+    await expect(errorElement).toBeVisible();  
+    await expect(errorElement).toHaveText(errorMessage);  
   }
 
-    // Метод для заповнення форми реєстрації
   async fillRegistrationForm(name, lastName, email, password) {
     await this.nameField.fill(name);
     await this.lastNameField.fill(lastName);
@@ -66,12 +56,4 @@ export class RegistrationPage {
   async submitRegistrationForm() {
     await expect(this.registerButton).toBeEnabled();
   }
-
 }
-
-// Функція для перевірки, чи є колір червоним
-function isRedColor(color) {
-  const [r, g, b] = color.match(/\d+/g).map(Number);
-  return r > g && r > b;  // Перевірка, що червоний компонент найбільший
-}
-

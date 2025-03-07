@@ -14,8 +14,7 @@ export class RegistrationPageNegative {
     }
 
     async openRegistrationForm() {
-        const url = `https://${process.env.QAUTO_USERNAME}:${process.env.QAUTO_PASSWORD}@${process.env.QAUTO_BASE_URL}/`;
-        await this.page.goto(url, { waitUntil: 'domcontentloaded' });
+        await this.page.goto('/', { waitUntil: 'domcontentloaded' }); // Використовує baseURL
         await expect(this.page.locator('header')).toBeVisible();
         await this.signUpButton.click();
         await expect(this.modalBody).toBeVisible();
