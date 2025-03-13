@@ -1,0 +1,64 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Negative tests >> Invalid Name (only spaces)
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\registrationNegative.spec.js:19:9
+
+# Error details
+
+```
+Error: page.goto: net::ERR_ABORTED at https://qauto.forstudy.space/
+Call log:
+  - navigating to "https://qauto.forstudy.space/", waiting until "domcontentloaded"
+
+    at RegistrationPageNegative.openRegistrationForm (C:\Users\maryna.bobkova\Automation\playwright\pages\registrationPageNegative.js:17:25)
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\registrationNegative.spec.js:12:32
+```
+
+# Test source
+
+```ts
+   1 | import { expect } from '@playwright/test';
+   2 |
+   3 | export class RegistrationPageNegative {
+   4 |     constructor(page) {
+   5 |         this.page = page;
+   6 |         this.signUpButton = page.locator('.hero-descriptor_btn');
+   7 |         this.modalBody = page.locator('.modal-body');
+   8 |         this.nameField = page.locator('#signupName');
+   9 |         this.lastNameField = page.locator('#signupLastName');
+  10 |         this.emailField = page.locator('#signupEmail');
+  11 |         this.passwordField = page.locator('#signupPassword');
+  12 |         this.repeatPasswordField = page.locator('#signupRepeatPassword');
+  13 |         this.registerButton = page.locator('.modal-footer .btn-primary');
+  14 |     }
+  15 |
+  16 |     async openRegistrationForm() {
+> 17 |         await this.page.goto('/', { waitUntil: 'domcontentloaded' }); // Використовує baseURL
+     |                         ^ Error: page.goto: net::ERR_ABORTED at https://qauto.forstudy.space/
+  18 |         await expect(this.page.locator('header')).toBeVisible();
+  19 |         await this.signUpButton.click();
+  20 |         await expect(this.modalBody).toBeVisible();
+  21 |     }
+  22 |
+  23 |     async checkRequiredField(field, errorMessage) {
+  24 |         await field.click();
+  25 |         await this.modalBody.click(); // Втрата фокусу
+  26 |         const errorElement = field.locator('~ .invalid-feedback');
+  27 |         await expect(errorElement).toBeVisible();
+  28 |         await expect(errorElement).toHaveText(errorMessage);
+  29 |         await expect(this.registerButton).toBeDisabled();
+  30 |     }
+  31 |
+  32 |     async fillField(field, value) {
+  33 |         await field.fill(value);
+  34 |         await this.modalBody.click();
+  35 |     }
+  36 | }
+  37 |
+```

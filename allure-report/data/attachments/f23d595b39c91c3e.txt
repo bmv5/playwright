@@ -1,0 +1,130 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: New Todo >> should allow me to add todo items
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests-examples\demo-todo-app.spec.ts:14:7
+
+# Error details
+
+```
+Error: page.goto: net::ERR_ABORTED at https://demo.playwright.dev/todomvc
+Call log:
+  - navigating to "https://demo.playwright.dev/todomvc", waiting until "load"
+
+    at C:\Users\maryna.bobkova\Automation\playwright\tests-examples\demo-todo-app.spec.ts:4:14
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect, type Page } from '@playwright/test';
+   2 |
+   3 | test.beforeEach(async ({ page }) => {
+>  4 |   await page.goto('https://demo.playwright.dev/todomvc');
+     |              ^ Error: page.goto: net::ERR_ABORTED at https://demo.playwright.dev/todomvc
+   5 | });
+   6 |
+   7 | const TODO_ITEMS = [
+   8 |   'buy some cheese',
+   9 |   'feed the cat',
+   10 |   'book a doctors appointment'
+   11 | ] as const;
+   12 |
+   13 | test.describe('New Todo', () => {
+   14 |   test('should allow me to add todo items', async ({ page }) => {
+   15 |     // create a new todo locator
+   16 |     const newTodo = page.getByPlaceholder('What needs to be done?');
+   17 |
+   18 |     // Create 1st todo.
+   19 |     await newTodo.fill(TODO_ITEMS[0]);
+   20 |     await newTodo.press('Enter');
+   21 |
+   22 |     // Make sure the list only has one todo item.
+   23 |     await expect(page.getByTestId('todo-title')).toHaveText([
+   24 |       TODO_ITEMS[0]
+   25 |     ]);
+   26 |
+   27 |     // Create 2nd todo.
+   28 |     await newTodo.fill(TODO_ITEMS[1]);
+   29 |     await newTodo.press('Enter');
+   30 |
+   31 |     // Make sure the list now has two todo items.
+   32 |     await expect(page.getByTestId('todo-title')).toHaveText([
+   33 |       TODO_ITEMS[0],
+   34 |       TODO_ITEMS[1]
+   35 |     ]);
+   36 |
+   37 |     await checkNumberOfTodosInLocalStorage(page, 2);
+   38 |   });
+   39 |
+   40 |   test('should clear text input field when an item is added', async ({ page }) => {
+   41 |     // create a new todo locator
+   42 |     const newTodo = page.getByPlaceholder('What needs to be done?');
+   43 |
+   44 |     // Create one todo item.
+   45 |     await newTodo.fill(TODO_ITEMS[0]);
+   46 |     await newTodo.press('Enter');
+   47 |
+   48 |     // Check that input is empty.
+   49 |     await expect(newTodo).toBeEmpty();
+   50 |     await checkNumberOfTodosInLocalStorage(page, 1);
+   51 |   });
+   52 |
+   53 |   test('should append new items to the bottom of the list', async ({ page }) => {
+   54 |     // Create 3 items.
+   55 |     await createDefaultTodos(page);
+   56 |
+   57 |     // create a todo count locator
+   58 |     const todoCount = page.getByTestId('todo-count')
+   59 |   
+   60 |     // Check test using different methods.
+   61 |     await expect(page.getByText('3 items left')).toBeVisible();
+   62 |     await expect(todoCount).toHaveText('3 items left');
+   63 |     await expect(todoCount).toContainText('3');
+   64 |     await expect(todoCount).toHaveText(/3/);
+   65 |
+   66 |     // Check all items in one call.
+   67 |     await expect(page.getByTestId('todo-title')).toHaveText(TODO_ITEMS);
+   68 |     await checkNumberOfTodosInLocalStorage(page, 3);
+   69 |   });
+   70 | });
+   71 |
+   72 | test.describe('Mark all as completed', () => {
+   73 |   test.beforeEach(async ({ page }) => {
+   74 |     await createDefaultTodos(page);
+   75 |     await checkNumberOfTodosInLocalStorage(page, 3);
+   76 |   });
+   77 |
+   78 |   test.afterEach(async ({ page }) => {
+   79 |     await checkNumberOfTodosInLocalStorage(page, 3);
+   80 |   });
+   81 |
+   82 |   test('should allow me to mark all items as completed', async ({ page }) => {
+   83 |     // Complete all todos.
+   84 |     await page.getByLabel('Mark all as complete').check();
+   85 |
+   86 |     // Ensure all todos have 'completed' class.
+   87 |     await expect(page.getByTestId('todo-item')).toHaveClass(['completed', 'completed', 'completed']);
+   88 |     await checkNumberOfCompletedTodosInLocalStorage(page, 3);
+   89 |   });
+   90 |
+   91 |   test('should allow me to clear the complete state of all items', async ({ page }) => {
+   92 |     const toggleAll = page.getByLabel('Mark all as complete');
+   93 |     // Check and then immediately uncheck.
+   94 |     await toggleAll.check();
+   95 |     await toggleAll.uncheck();
+   96 |
+   97 |     // Should be no completed classes.
+   98 |     await expect(page.getByTestId('todo-item')).toHaveClass(['', '', '']);
+   99 |   });
+  100 |
+  101 |   test('complete all checkbox should update state when items are completed / cleared', async ({ page }) => {
+  102 |     const toggleAll = page.getByLabel('Mark all as complete');
+  103 |     await toggleAll.check();
+  104 |     await expect(toggleAll).toBeChecked();
+```

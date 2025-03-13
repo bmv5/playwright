@@ -1,0 +1,77 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Basic Auth Test with Registration Form - Full Validation >> should enable the Register button when all data is valid
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\registration_positive.spec.js:39:3
+
+# Error details
+
+```
+Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+Call log:
+  - navigating to "https://guest:welcome2qauto@qauto.forstudy.space/", waiting until "domcontentloaded"
+
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\registration_positive.spec.js:9:16
+```
+
+# Test source
+
+```ts
+   1 | const { test, expect } = require('@playwright/test');
+   2 |
+   3 | test.describe('Basic Auth Test with Registration Form - Full Validation', () => {
+   4 |   test.beforeEach(async ({ page }) => {
+   5 |     const username = 'guest';
+   6 |     const password = 'welcome2qauto';
+   7 |     const url = `https://${username}:${password}@qauto.forstudy.space/`;
+   8 |
+>  9 |     await page.goto(url, { waitUntil: 'domcontentloaded' });
+     |                ^ Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+  10 |
+  11 |     // Переконуємося, що header видно на сторінці
+  12 |     await expect(page.locator('header')).toBeVisible();
+  13 |
+  14 |     // Клікаємо на кнопку "Sign up"
+  15 |     await page.locator('.hero-descriptor_btn').click();
+  16 |
+  17 |     // Чекаємо появи модального вікна
+  18 |     await expect(page.locator('.modal-body')).toBeVisible();
+  19 |   });
+  20 |
+  21 |   // Функція перевірки обов'язкових полів (тепер приймає page)
+  22 |   async function checkRequiredField(page, selector, errorMessage) {
+  23 |     await page.locator(selector).click();
+  24 |     await page.locator('.modal-body').click(); // Клік поза полем для втрати фокусу
+  25 |     await expect(page.locator(`${selector} ~ .invalid-feedback`)).toHaveText(errorMessage);
+  26 |     
+  27 |     const borderColor = await page.locator(selector).evaluate(el => window.getComputedStyle(el).borderColor);
+  28 |     expect(borderColor).toBe('rgb(220, 53, 69)');
+  29 |   }
+  30 |
+  31 | //   test('should validate required fields only after losing focus', async ({ page }) => {
+  32 | //     await checkRequiredField(page, '#signupName', 'Name required');
+  33 | //     await checkRequiredField(page, '#signupLastName', 'Last name required');
+  34 | //     await checkRequiredField(page, '#signupEmail', 'Email required');
+  35 | //     await checkRequiredField(page, '#signupPassword', 'Password required');
+  36 | //     await checkRequiredField(page, '#signupRepeatPassword', 'Re-enter password required');
+  37 | //   });
+  38 |
+  39 |   test('should enable the Register button when all data is valid', async ({ page }) => {
+  40 |     // Вводимо валідні дані у поля
+  41 |     await page.locator('#signupName').fill('ValidName');
+  42 |     await page.locator('#signupLastName').fill('ValidLastName');
+  43 |     await page.locator('#signupEmail').fill('validemail@example.com');
+  44 |     await page.locator('#signupPassword').fill('Password1');
+  45 |     await page.locator('#signupRepeatPassword').fill('Password1');
+  46 |
+  47 |     // Перевіряємо, що кнопка реєстрації активна
+  48 |     await expect(page.locator('.modal-footer > .btn')).toBeEnabled();
+  49 |   });
+  50 | });
+  51 |
+```

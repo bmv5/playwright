@@ -1,0 +1,90 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Registration Form - Full Validation >> should validate required fields
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\registrationPositive.spec.js:36:7
+
+# Error details
+
+```
+Error: page.goto: net::ERR_ABORTED at https://qauto.forstudy.space/
+Call log:
+  - navigating to "https://qauto.forstudy.space/", waiting until "load"
+
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\registrationPositive.spec.js:15:16
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from '@playwright/test';
+   2 | import { RegistrationPage } from '../pages/registrationPagePositive.js';
+   3 |
+   4 | test.describe('Registration Form - Full Validation', () => {
+   5 |   let registrationPage;
+   6 |   let page;
+   7 |   let context;
+   8 |
+   9 |   test.beforeEach(async ({ browser, baseURL }) => { 
+  10 |     test.setTimeout(60000); // Збільшення тайм-ауту до 60 секунд
+  11 |     context = await browser.newContext(); // Створюємо новий контекст
+  12 |     page = await context.newPage(); // Створюємо нову сторінку
+  13 |
+  14 |     // Завантаження сторінки через baseURL із Playwright конфігу
+> 15 |     await page.goto(baseURL, { waitUntil: 'load', timeout: 20000 });
+     |                ^ Error: page.goto: net::ERR_ABORTED at https://qauto.forstudy.space/
+  16 |
+  17 |     // Перевіряємо наявність header
+  18 |     const header = page.locator('header');
+  19 |     if (await header.isVisible()) {
+  20 |       console.log('Header is visible!');
+  21 |     } else {
+  22 |       console.log('Header is not visible!');
+  23 |     }
+  24 |
+  25 |     // Очікуємо кнопку "Sign up" і клікаємо
+  26 |     const signUpButton = page.locator('.hero-descriptor .hero-descriptor_btn');
+  27 |     await expect(signUpButton).toBeVisible({ timeout: 10000 });
+  28 |     await signUpButton.click();
+  29 |
+  30 |     // Перевіряємо, що модальне вікно відкрилося
+  31 |     await expect(page.locator('.modal-body')).toBeVisible({ timeout: 10000 });
+  32 |
+  33 |     registrationPage = new RegistrationPage(page); // ініціалізація сторінки реєстрації
+  34 |   });
+  35 |
+  36 |   test('should validate required fields', async () => {
+  37 |     await registrationPage.openRegistrationForm();
+  38 |
+  39 |     // Перевірка обов'язкових полів
+  40 |     await registrationPage.checkRequiredField(registrationPage.nameField, 'Name required');
+  41 |     await registrationPage.checkRequiredField(registrationPage.lastNameField, 'Last name required');
+  42 |     await registrationPage.checkRequiredField(registrationPage.emailField, 'Email required');
+  43 |     await registrationPage.checkRequiredField(registrationPage.passwordField, 'Password required');
+  44 |     await registrationPage.checkRequiredField(registrationPage.repeatPasswordField, 'Re-enter password required');
+  45 |   });
+  46 |
+  47 |   test('should enable the Register button when all data is valid', async () => {
+  48 |     await registrationPage.openRegistrationForm();
+  49 |
+  50 |     // Заповнюємо форму
+  51 |     await registrationPage.fillRegistrationForm('ValidName', 'ValidLastName', 'aqa-valid@example.com', 'Password1');
+  52 |
+  53 |     // Перевіряємо, що кнопка Register стала активною
+  54 |     const registerButton = page.locator('.modal-footer > .btn-primary');
+  55 |     await expect(registerButton).toBeEnabled();
+  56 |   });
+  57 |
+  58 |   test.afterEach(async () => {
+  59 |     console.log('Closing page and context...');
+  60 |     await page.close(); // Закриваємо сторінку
+  61 |     await context.close(); // Закриваємо контекст
+  62 |   });
+  63 | });
+  64 |
+```
