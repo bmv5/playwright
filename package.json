@@ -6,15 +6,19 @@
   "scripts": {
     "test:prod": "npx playwright test --project=prod",
     "test:qa": "npx playwright test --project=qa",
-    "test:all": "npx playwright test"
+    "test:all": "npx playwright test",
+    "test:allure": "npx playwright test --reporter=allure-playwright",
+    "allure:generate": "npx allure generate allure-results --clean",
+    "allure:open": "npx allure open allure-report"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "@playwright/test": "^1.50.1",
-    "@types/node": "^22.13.4"
+    "@playwright/test": "^1.51.0",
+    "@types/node": "^22.13.4",
+    "allure-playwright": "^3.2.0"
   },
   "dependencies": {
     "dotenv": "^16.4.7"

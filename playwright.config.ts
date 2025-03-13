@@ -14,6 +14,9 @@ export default defineConfig({
           username: process.env.PROD_USERNAME || 'guest',
           password: process.env.PROD_PASSWORD || 'welcome2qauto',
         },
+        trace: 'on', // Додає трасування до репорту
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
       },
     },
     {
@@ -24,7 +27,16 @@ export default defineConfig({
           username: process.env.QA_USERNAME || 'guest',
           password: process.env.QA_PASSWORD || 'welcome2qauto',
         },
+        trace: 'on',
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
       },
     },
+  ],
+  reporter: [
+    ['list'],
+    ['json', {  outputFile: 'test-results.json' }],
+    ['dot'],
+    ['allure-playwright']
   ],
 });

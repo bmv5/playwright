@@ -1,0 +1,1 @@
+{"total":2,"items":[{"uid":"42c0ca36eb87a57fc8f397f1fb121d34","name":"qa","statistic":{"failed":2,"broken":0,"skipped":0,"passed":53,"unknown":0,"total":55}},{"uid":"b58b701851300fb444c2de5ef6a6051e","name":"prod","statistic":{"failed":0,"broken":0,"skipped":0,"passed":55,"unknown":0,"total":55}}]}

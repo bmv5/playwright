@@ -1,0 +1,158 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Negative tests >> Invalid Password (no numbers)
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\registrationNegative.spec.js:110:9
+
+# Error details
+
+```
+Error: Timed out 5000ms waiting for expect(locator).toHaveText(expected)
+
+Locator: locator('#signupPassword').locator('+ .invalid-feedback')
+Expected string: "Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter"
+Received: <element(s) not found>
+Call log:
+  - expect.toHaveText with timeout 5000ms
+  - waiting for locator('#signupPassword').locator('+ .invalid-feedback')
+
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\registrationNegative.spec.js:112:85
+```
+
+# Page snapshot
+
+```yaml
+- dialog:
+  - document:
+    - heading "Registration" [level=4]
+    - button "Close"
+    - text: Name
+    - textbox
+    - text: Last name
+    - textbox
+    - text: Email
+    - textbox "Name Last name Email"
+    - text: Password
+    - textbox "Password": TestTest
+    - text: Re-enter password
+    - textbox "Re-enter password"
+    - button "Register" [disabled]
+```
+
+# Test source
+
+```ts
+   12 |         await registrationPage.openRegistrationForm();
+   13 |     });
+   14 |
+   15 |     test('Empty Name field', async () => {
+   16 |         await registrationPage.checkRequiredField(registrationPage.nameField, 'Name required');
+   17 |     });
+   18 |
+   19 |     test('Invalid Name (only spaces)', async () => {
+   20 |         await registrationPage.fillField(registrationPage.nameField, '   ');
+   21 |         await expect(registrationPage.nameField.locator('+ .invalid-feedback')).toHaveText('Name is invalid');
+   22 |         await expect(registrationPage.registerButton).toBeDisabled();
+   23 |     });
+   24 |
+   25 |     test('Name field with Cyrillic input', async () => {
+   26 |         await registrationPage.fillField(registrationPage.nameField, 'Іван');
+   27 |         await registrationPage.nameField.blur();
+   28 |         await expect(registrationPage.nameField).toHaveClass(/ng-invalid/);
+   29 |         await expect(registrationPage.nameField).toHaveClass(/ng-touched/);
+   30 |         await expect(registrationPage.nameField.locator('~ .invalid-feedback')).toHaveText('Name is invalid');
+   31 |         await expect(registrationPage.registerButton).toBeDisabled();
+   32 |     });
+   33 |
+   34 |     test('Short Name (1 character)', async () => {
+   35 |         await registrationPage.fillField(registrationPage.nameField, 'J');
+   36 |         await expect(registrationPage.nameField.locator('+ .invalid-feedback')).toHaveText('Name has to be from 2 to 20 characters long');
+   37 |         await expect(registrationPage.registerButton).toBeDisabled();
+   38 |     });
+   39 |
+   40 |     test('Long Name (21 characters)', async () => {
+   41 |         await registrationPage.fillField(registrationPage.nameField, 'ABCDEFGHIJKLMNOPRSTQR');
+   42 |         await registrationPage.modalBody.click();
+   43 |         await expect(registrationPage.nameField.locator('+ .invalid-feedback')).toHaveText('Name has to be from 2 to 20 characters long');
+   44 |         await expect(registrationPage.registerButton).toBeDisabled();
+   45 |     });
+   46 |
+   47 |     test('Invalid Last name (only spaces)', async () => {
+   48 |         await registrationPage.fillField(registrationPage.lastNameField, '   ');
+   49 |         await registrationPage.modalBody.click();
+   50 |         await expect(registrationPage.lastNameField.locator('+ .invalid-feedback')).toHaveText('Last name is invalid');
+   51 |         await expect(registrationPage.registerButton).toBeDisabled();
+   52 |     });
+   53 |
+   54 |     test('Empty Last name field', async () => {
+   55 |         await registrationPage.checkRequiredField(registrationPage.lastNameField, 'Last name required');
+   56 |     });
+   57 |
+   58 |     test('Last name field with Cyrillic input', async () => {
+   59 |         await registrationPage.fillField(registrationPage.lastNameField, 'Завернигора');
+   60 |         await registrationPage.lastNameField.blur();
+   61 |         await expect(registrationPage.lastNameField).toHaveClass(/ng-invalid/);
+   62 |         await expect(registrationPage.lastNameField).toHaveClass(/ng-touched/);
+   63 |         await expect(registrationPage.lastNameField.locator('~ .invalid-feedback')).toHaveText('Last name is invalid');
+   64 |         await expect(registrationPage.registerButton).toBeDisabled();
+   65 |     });
+   66 |     
+   67 |     test('Short Last name (1 character)', async () => {
+   68 |         await registrationPage.fillField(registrationPage.lastNameField, 'A');
+   69 |         await registrationPage.modalBody.click();
+   70 |         await expect(registrationPage.lastNameField.locator('+ .invalid-feedback')).toHaveText('Last name has to be from 2 to 20 characters long');
+   71 |         await expect(registrationPage.registerButton).toBeDisabled();
+   72 |     });
+   73 |     
+   74 |     test('Long Last name (21 characters)', async () => {
+   75 |         await registrationPage.fillField(registrationPage.lastNameField, 'ABCDEFGHIJKLMNOPRSTQR');
+   76 |         await registrationPage.modalBody.click();
+   77 |         await expect(registrationPage.lastNameField.locator('+ .invalid-feedback')).toHaveText('Last name has to be from 2 to 20 characters long');
+   78 |         await expect(registrationPage.registerButton).toBeDisabled();
+   79 |     });
+   80 |
+   81 |     test('Invalid Email format', async () => {
+   82 |         await registrationPage.fillField(registrationPage.emailField, 'invalid_email');
+   83 |     
+   84 |         // Явно втрачаємо фокус, щоб Angular оновив валідацію
+   85 |         await registrationPage.emailField.blur();
+   86 |     
+   87 |         // Очікуємо, що поле стало невалідним
+   88 |         await expect(registrationPage.emailField).toHaveClass(/ng-invalid/, { timeout: 7000 });
+   89 |         await expect(registrationPage.emailField).toHaveClass(/ng-touched/);
+   90 |     
+   91 |         // Локатор повідомлення про помилку
+   92 |         const errorLocator = registrationPage.emailField.locator('~ .invalid-feedback');
+   93 |     
+   94 |         // Очікуємо появу повідомлення про помилку
+   95 |         await expect(errorLocator).toBeVisible({ timeout: 7000 });
+   96 |         await expect(errorLocator).toHaveText(/Email is incorrect/i, { timeout: 7000 });
+   97 |     
+   98 |         // Переконуємося, що кнопка "Register" залишається неактивною
+   99 |         await expect(registrationPage.registerButton).toBeDisabled();
+  100 |     });
+  101 |     
+  102 |
+  103 |     test('Mismatched Passwords', async () => {
+  104 |         await registrationPage.fillField(registrationPage.passwordField, 'Test1234');
+  105 |         await registrationPage.fillField(registrationPage.repeatPasswordField, 'WrongPass1');
+  106 |         await expect(registrationPage.repeatPasswordField.locator('+ .invalid-feedback')).toHaveText('Passwords do not match');
+  107 |         await expect(registrationPage.registerButton).toBeDisabled();
+  108 |     });
+  109 |
+  110 |     test('Invalid Password (no numbers)', async () => {
+  111 |         await registrationPage.fillField(registrationPage.passwordField, 'TestTest');
+> 112 |         await expect(registrationPage.passwordField.locator('+ .invalid-feedback')).toHaveText(
+      |                                                                                     ^ Error: Timed out 5000ms waiting for expect(locator).toHaveText(expected)
+  113 |             'Password has to be from 8 to 15 characters long and contain at least one integer, one capital, and one small letter'
+  114 |         );
+  115 |         await expect(registrationPage.registerButton).toBeDisabled();
+  116 |     });
+  117 | });
+  118 |
+```
