@@ -1,0 +1,179 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: User should see correct heading on garage page
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\garage.spec.js:3:5
+
+# Error details
+
+```
+Error: Timed out 5000ms waiting for expect(locator).toHaveText(expected)
+
+Locator: locator('h1.hero-descriptor_title')
+Expected string: "Do more!"
+Received: <element(s) not found>
+Call log:
+  - expect.toHaveText with timeout 5000ms
+  - waiting for locator('h1.hero-descriptor_title')
+
+    at GaragePage.verifyGaragePage (C:\Users\maryna.bobkova\Automation\playwright\pages\garagePage.js:14:37)
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\garage.spec.js:5:24
+```
+
+# Page snapshot
+
+```yaml
+- banner:
+  - link:
+    - img
+  - navigation:
+    - link "Garage"
+    - link "Fuel expenses"
+    - link "Instructions"
+  - button "User photo My profile":
+    - img "User photo"
+    - text: My profile
+- navigation:
+  - link " Garage"
+  - link " Fuel expenses"
+  - link " Instructions"
+  - link " Profile"
+  - link " Settings"
+  - text:  Log out
+- heading "Garage" [level=1]
+- button "Add car"
+- list:
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "50000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "70000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+- contentinfo:
+  - paragraph: © 2021 Hillel IT school
+  - paragraph: Hillel auto developed in Hillel IT school for educational purposes of QA courses.
+  - link:
+    - img
+```
+
+# Test source
+
+```ts
+   1 | import { expect } from '@playwright/test';
+   2 |
+   3 | export class GaragePage {
+   4 |   constructor(page) {
+   5 |     this.page = page;
+   6 |     this.garageHeader = page.locator('h1.hero-descriptor_title'); // Оновлено локатор
+   7 |   }
+   8 |
+   9 |   async open() {
+  10 |     await this.page.goto('/panel/garage');
+  11 |   }
+  12 |
+  13 |   async verifyGaragePage() {
+> 14 |     await expect(this.garageHeader).toHaveText('Do more!'); // Оновлена перевірка
+     |                                     ^ Error: Timed out 5000ms waiting for expect(locator).toHaveText(expected)
+  15 |   }
+  16 | }
+  17 |
+  18 |
+```

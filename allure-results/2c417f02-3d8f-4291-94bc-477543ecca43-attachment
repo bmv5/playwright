@@ -1,0 +1,37 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: User should see correct heading on garage page
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\garage.spec.js:3:5
+
+# Error details
+
+```
+Error: Error reading storage state from storageState.json:
+ENOENT: no such file or directory, open 'C:\Users\maryna.bobkova\Automation\playwright\storageState.json'
+    at Object.userGaragePage (C:\Users\maryna.bobkova\Automation\playwright\tests\fixtures.js:6:21)
+```
+
+# Test source
+
+```ts
+   1 | import { test as base } from '@playwright/test';
+   2 | import { GaragePage } from '../pages/garagePage';
+   3 |
+   4 | export const test = base.extend({
+   5 |   userGaragePage: async ({ browser }, use) => {
+>  6 |     const context = await browser.newContext({ storageState: 'storageState.json' });
+     |                     ^ Error: Error reading storage state from storageState.json:
+   7 |     const page = await context.newPage();
+   8 |     const garagePage = new GaragePage(page);
+   9 |     await use(garagePage);
+  10 |     await context.close();
+  11 |   },
+  12 | });
+  13 |
+```
