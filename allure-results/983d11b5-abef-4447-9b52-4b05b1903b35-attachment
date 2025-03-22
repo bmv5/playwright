@@ -1,0 +1,196 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Profile page - mock API response
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\profile.spec.js:5:5
+
+# Error details
+
+```
+Error: page.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for locator('a[href="/panel/profile"]')
+    - locator resolved to <a ngbdropdownitem="" _ngcontent-cbw-c54="" href="/panel/profile" routerlink="/panel/profile" routerlinkactive="disabled" class="dropdown-item btn btn-link user-nav_link">Profile</a>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    57 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\profile.spec.js:20:14
+```
+
+# Page snapshot
+
+```yaml
+- banner:
+  - link:
+    - img
+  - navigation:
+    - link "Garage"
+    - link "Fuel expenses"
+    - link "Instructions"
+  - button "User photo My profile":
+    - img "User photo"
+    - text: My profile
+- navigation:
+  - link " Garage"
+  - link " Fuel expenses"
+  - link " Instructions"
+  - link " Profile"
+  - link " Settings"
+  - text:  Log out
+- heading "Garage" [level=1]
+- button "Add car"
+- list:
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "50000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "70000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+- contentinfo:
+  - paragraph: © 2021 Hillel IT school
+  - paragraph: Hillel auto developed in Hillel IT school for educational purposes of QA courses.
+  - link:
+    - img
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from '@playwright/test';
+   2 |
+   3 | test.use({ storageState: 'storageState.json' });
+   4 |
+   5 | test('Profile page - mock API response', async ({ page }) => {
+   6 |   // Перехоплення API перед відкриттям сторінки
+   7 |   await page.route('**/api/profile', async (route) => {
+   8 |     const mockedResponse = {
+   9 |       id: 123,
+  10 |       name: 'John Doe', // Підмінене ім'я
+  11 |       email: 'john.doe@example.com',
+  12 |     };
+  13 |     await route.fulfill({ json: mockedResponse });
+  14 |   });
+  15 |
+  16 |   // Відкриваємо гараж (авторизований користувач)
+  17 |   await page.goto('https://qauto.forstudy.space/panel/garage', { waitUntil: 'domcontentloaded' });
+  18 |
+  19 |   // Перехід до профілю
+> 20 |   await page.click('a[href="/panel/profile"]');
+     |              ^ Error: page.click: Test timeout of 30000ms exceeded.
+  21 |   await page.waitForURL('https://qauto.forstudy.space/panel/profile');
+  22 |
+  23 |   // Перевіряємо, що підмінені дані відображаються
+  24 |   const profileName = page.locator('.profile_name');
+  25 |   await expect(profileName).toHaveText('John Doe');
+  26 | });
+  27 |
+```
