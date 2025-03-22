@@ -1,0 +1,16 @@
+✅ Авторизація пройдена. Отриманий токен: undefined
+🚗 Машина створена: {
+  status: 'ok',
+  data: {
+    id: 303800,
+    carBrandId: 2,
+    carModelId: 8,
+    initialMileage: 123,
+    updatedMileageAt: '2025-03-22T18:11:00.741Z',
+    carCreatedAt: '2025-03-22T18:11:00.741Z',
+    mileage: 123,
+    brand: 'BMW',
+    model: 'X5',
+    logo: 'bmw.png'
+  }
+}
