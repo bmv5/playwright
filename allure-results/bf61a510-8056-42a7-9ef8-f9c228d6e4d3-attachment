@@ -1,0 +1,102 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: API тестування: створення машини >> Негативний сценарій: створення машини з відсутніми обов'язковими даними
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\cars.spec.js:35:3
+
+# Error details
+
+```
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 400
+Received: 401
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\cars.spec.js:45:31
+```
+
+# Test source
+
+```ts
+   1 | const { test, expect } = require('@playwright/test');
+   2 |
+   3 | test.describe('API тестування: створення машини', () => {
+   4 |   
+   5 |   let apiContext;
+   6 |
+   7 |   test.beforeAll(async () => {
+   8 |     // Ініціалізація APIRequestContext для взаємодії з API
+   9 |     apiContext = await test.request.newContext({
+  10 |       baseURL: 'https://qauto.forstudy.space',
+  11 |     });
+  12 |   });
+  13 |
+  14 |   test('Позитивний сценарій: створення машини з валідними даними', async () => {
+  15 |     // Відправляємо POST запит на створення машини
+  16 |     const response = await apiContext.post('/api/cars', {
+  17 |       data: {
+  18 |         carBrandId: 2,   // ID бренду машини
+  19 |         carModelId: 8,   // ID моделі машини
+  20 |         mileage: 123     // Пробіг
+  21 |       }
+  22 |     });
+  23 |
+  24 |     // Перевірка статусу відповіді
+  25 |     expect(response.status()).toBe(201);  // Має бути статус 201 Created
+  26 |
+  27 |     // Перевірка тіла відповіді
+  28 |     const responseBody = await response.json();
+  29 |     expect(responseBody).toHaveProperty('data');  // Перевіряємо, чи є дані в відповіді
+  30 |     expect(responseBody.data).toHaveProperty('carBrandId', 2);
+  31 |     expect(responseBody.data).toHaveProperty('carModelId', 8);
+  32 |     expect(responseBody.data).toHaveProperty('mileage', 123);
+  33 |   });
+  34 |
+  35 |   test('Негативний сценарій: створення машини з відсутніми обов\'язковими даними', async () => {
+  36 |     // Відправляємо POST запит без необхідних даних
+  37 |     const response = await apiContext.post('/api/cars', {
+  38 |       data: {
+  39 |         // відсутні carBrandId і carModelId
+  40 |         mileage: 123
+  41 |       }
+  42 |     });
+  43 |
+  44 |     // Перевірка, що отримано помилку 400 Bad Request
+> 45 |     expect(response.status()).toBe(400);  // Має бути статус 400 Bad Request
+     |                               ^ Error: expect(received).toBe(expected) // Object.is equality
+  46 |
+  47 |     const responseBody = await response.json();
+  48 |     expect(responseBody).toHaveProperty('error');
+  49 |     expect(responseBody.error).toBe('Bad request');  // Перевіряємо, що це помилка через некоректні дані
+  50 |   });
+  51 |
+  52 |   test('Негативний сценарій: створення машини з некоректними даними', async () => {
+  53 |     // Відправляємо POST запит з некоректними даними (наприклад, строковий тип для mileage)
+  54 |     const response = await apiContext.post('/api/cars', {
+  55 |       data: {
+  56 |         carBrandId: 2,
+  57 |         carModelId: 8,
+  58 |         mileage: 'abc'  // Некоректний тип для mileage
+  59 |       }
+  60 |     });
+  61 |
+  62 |     // Перевірка, що отримано помилку 400 Bad Request
+  63 |     expect(response.status()).toBe(400);  // Має бути статус 400 Bad Request
+  64 |
+  65 |     const responseBody = await response.json();
+  66 |     expect(responseBody).toHaveProperty('error');
+  67 |     expect(responseBody.error).toBe('Invalid mileage');  // Перевіряємо, що це помилка через некоректний формат даних
+  68 |   });
+  69 |
+  70 |   test.afterAll(async () => {
+  71 |     // Закриваємо API контекст після виконання тестів
+  72 |     await apiContext.dispose();
+  73 |   });
+  74 |
+  75 | });
+  76 |
+```
