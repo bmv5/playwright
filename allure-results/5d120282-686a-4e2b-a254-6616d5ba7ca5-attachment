@@ -1,0 +1,205 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Profile page - mock API response
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\profile.spec.js:5:5
+
+# Error details
+
+```
+Error: locator.waitFor: Error: strict mode violation: locator('a[href="/panel/profile"]') resolved to 2 elements:
+    1) <a ngbdropdownitem="" _ngcontent-abl-c54="" href="/panel/profile" routerlink="/panel/profile" routerlinkactive="disabled" class="dropdown-item btn btn-link user-nav_link">Profile</a> aka getByLabel('My profile').getByText('Profile')
+    2) <a routerlink="profile" _ngcontent-abl-c64="" href="/panel/profile" routerlinkactive="-active" class="btn btn-white btn-sidebar sidebar_btn -profile">…</a> aka getByRole('link', { name: ' Profile' })
+
+Call log:
+  - waiting for locator('a[href="/panel/profile"]') to be visible
+
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\profile.spec.js:32:23
+```
+
+# Page snapshot
+
+```yaml
+- banner:
+  - link:
+    - img
+  - navigation:
+    - link "Garage"
+    - link "Fuel expenses"
+    - link "Instructions"
+  - button "User photo My profile":
+    - img "User photo"
+    - text: My profile
+- navigation:
+  - link " Garage"
+  - link " Fuel expenses"
+  - link " Instructions"
+  - link " Profile"
+  - link " Settings"
+  - text:  Log out
+- heading "Garage" [level=1]
+- button "Add car"
+- list:
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "50000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "70000"
+    - button "Update" [disabled]
+  - listitem:
+    - img "TT"
+    - paragraph: Audi TT
+    - button ""
+    - button "Add fuel expense"
+    - paragraph: Update mileage • 20.02.2025
+    - text: 
+    - spinbutton: "60000"
+    - button "Update" [disabled]
+- contentinfo:
+  - paragraph: © 2021 Hillel IT school
+  - paragraph: Hillel auto developed in Hillel IT school for educational purposes of QA courses.
+  - link:
+    - img
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from '@playwright/test';
+   2 |
+   3 | test.use({ storageState: 'storageState.json' });
+   4 |
+   5 | test('Profile page - mock API response', async ({ page }) => {
+   6 |   // 🔍 Логуємо ВСІ запити для дебагу
+   7 |   page.on('request', (request) => console.log(`➡️ [REQUEST] ${request.url()}`));
+   8 |   page.on('response', async (response) => {
+   9 |     if (response.url().includes('/api/users/profile')) {
+  10 |       console.log(`✅ [PROFILE API] Відповідь отримана -> ${response.status()}`);
+  11 |       console.log(await response.json()); // Дивимось тіло відповіді
+  12 |     }
+  13 |   });
+  14 |
+  15 |   // ✅ Підміна відповіді для запиту `/api/users/profile`
+  16 |   await page.route('**/api/users/profile', async (route) => {
+  17 |     console.log('⚡ [MOCK] Перехоплено /api/users/profile');
+  18 |     await route.fulfill({
+  19 |       status: 200,
+  20 |       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' },
+  21 |       json: { id: 123, name: 'John Doe', email: 'john.doe@example.com' },
+  22 |     });
+  23 |   });
+  24 |
+  25 |   // ✅ Відкриваємо гараж
+  26 |   console.log('➡️ Переходимо в Garage...');
+  27 |   await page.goto('https://qauto.forstudy.space/panel/garage', { waitUntil: 'networkidle' });
+  28 |
+  29 |   // ✅ Натискаємо "Profile"
+  30 |   console.log('➡️ Клікаємо на "Profile"...');
+  31 |   const profileButton = page.locator('a[href="/panel/profile"]');
+> 32 |   await profileButton.waitFor({ state: 'visible', timeout: 5000 });
+     |                       ^ Error: locator.waitFor: Error: strict mode violation: locator('a[href="/panel/profile"]') resolved to 2 elements:
+  33 |   await profileButton.click();
+  34 |
+  35 |   // ✅ Очікуємо відповідь від `/api/users/profile`
+  36 |   console.log('🔍 Очікуємо відповідь від /api/users/profile...');
+  37 |   const response = await page.waitForResponse((response) => {
+  38 |     return response.url().includes('/api/users/profile') && response.status() === 200;
+  39 |   });
+  40 |
+  41 |   console.log('✅ [SUCCESS] Отримали /api/users/profile, перевіряємо ім\'я...');
+  42 |
+  43 |   // ✅ Перевіряємо, що ім'я оновилося
+  44 |   const profileName = page.locator('.profile_name');
+  45 |   await expect(profileName).toHaveText('John Doe', { timeout: 5000 });
+  46 | });
+  47 |
+```

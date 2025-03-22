@@ -82,14 +82,14 @@
   },
   "suites": [
     {
-      "title": "tests\\garage.spec.js",
-      "file": "tests/garage.spec.js",
+      "title": "tests\\profile.spec.js",
+      "file": "tests/profile.spec.js",
       "column": 0,
       "line": 0,
       "specs": [
         {
-          "title": "User should see correct heading on garage page",
-          "ok": true,
+          "title": "Profile page - mock API response",
+          "ok": false,
           "tags": [],
           "tests": [
             {
@@ -100,30 +100,311 @@
               "projectName": "prod",
               "results": [
                 {
-                  "workerIndex": 2,
+                  "workerIndex": 13,
                   "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 1102,
-                  "errors": [],
-                  "stdout": [],
+                  "status": "failed",
+                  "duration": 23997,
+                  "error": {
+                    "message": "TimeoutError: page.waitForResponse: Timeout 20000ms exceeded while waiting for event \"response\"",
+                    "stack": "TimeoutError: page.waitForResponse: Timeout 20000ms exceeded while waiting for event \"response\"\n    at C:\\Users\\maryna.bobkova\\Automation\\playwright\\tests\\profile.spec.js:55:31",
+                    "location": {
+                      "file": "C:\\Users\\maryna.bobkova\\Automation\\playwright\\tests\\profile.spec.js",
+                      "column": 31,
+                      "line": 55
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 53 |\u001b[39m\n \u001b[90m 54 |\u001b[39m   \u001b[90m// ✅ Додаємо логування перед очікуванням відповіді\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m   \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForResponse((res) \u001b[33m=>\u001b[39m {\n \u001b[90m    |\u001b[39m                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m`🔎 Перевіряємо: ${res.url()} -> ${res.status()}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m     \u001b[36mreturn\u001b[39m res\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/api/users/profile'\u001b[39m) \u001b[33m&&\u001b[39m res\u001b[33m.\u001b[39mstatus() \u001b[33m===\u001b[39m \u001b[35m200\u001b[39m\u001b[33m;\u001b[39m  \u001b[90m// Правильний код статусу 200\u001b[39m\n \u001b[90m 58 |\u001b[39m   }\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m20000\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\maryna.bobkova\\Automation\\playwright\\tests\\profile.spec.js",
+                        "column": 31,
+                        "line": 55
+                      },
+                      "message": "TimeoutError: page.waitForResponse: Timeout 20000ms exceeded while waiting for event \"response\"\n\n\u001b[0m \u001b[90m 53 |\u001b[39m\n \u001b[90m 54 |\u001b[39m   \u001b[90m// ✅ Додаємо логування перед очікуванням відповіді\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m   \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForResponse((res) \u001b[33m=>\u001b[39m {\n \u001b[90m    |\u001b[39m                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m`🔎 Перевіряємо: ${res.url()} -> ${res.status()}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m     \u001b[36mreturn\u001b[39m res\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/api/users/profile'\u001b[39m) \u001b[33m&&\u001b[39m res\u001b[33m.\u001b[39mstatus() \u001b[33m===\u001b[39m \u001b[35m200\u001b[39m\u001b[33m;\u001b[39m  \u001b[90m// Правильний код статусу 200\u001b[39m\n \u001b[90m 58 |\u001b[39m   }\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m20000\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\maryna.bobkova\\Automation\\playwright\\tests\\profile.spec.js:55:31\u001b[22m"
+                    }
+                  ],
+                  "stdout": [
+                    {
+                      "text": "➡️ Переходимо в Garage...\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/panel/garage\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/panel/garage\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/styles.88528c1a903f6340d08d.css\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/runtime.8c98f29b1b2438464dff.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/polyfills.6e046e1f7348145a8892.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/main.e486d78272f65ea053f1.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/styles.88528c1a903f6340d08d.css\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/runtime.8c98f29b1b2438464dff.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/main.e486d78272f65ea053f1.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/polyfills.6e046e1f7348145a8892.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/api/users/current\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/6.b1a1776ed0e34798262d.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/public/images/users/default-user.png\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/api/users/current\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/public/images/users/default-user.png\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/6.b1a1776ed0e34798262d.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/5.fa8b2869597fa1e63e40.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/5.fa8b2869597fa1e63e40.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/common.a88df0ed7a32e79bec5d.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/8.a57afc8c265fd096e1de.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/common.a88df0ed7a32e79bec5d.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/8.a57afc8c265fd096e1de.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/7.eb9cb0b7d22a2704c2fb.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/9.f6dee5e5db3a8c9f73ef.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/10.2e65401ab95e94ac036e.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/11.df1af5ff48cf0b3aeb43.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/api/cars\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/assets/fonts/icomoon/icomoon.ttf?gm5k87\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/9.f6dee5e5db3a8c9f73ef.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/10.2e65401ab95e94ac036e.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/api/cars\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/public/images/brands/audi.png\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/11.df1af5ff48cf0b3aeb43.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/7.eb9cb0b7d22a2704c2fb.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/assets/fonts/icomoon/icomoon.ttf?gm5k87\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/public/images/brands/audi.png\n"
+                    },
+                    {
+                      "text": "🔄 Перезавантажуємо сторінку для оновлення API-запиту...\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/panel/garage\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/panel/garage\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/styles.88528c1a903f6340d08d.css\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/runtime.8c98f29b1b2438464dff.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/polyfills.6e046e1f7348145a8892.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/main.e486d78272f65ea053f1.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/styles.88528c1a903f6340d08d.css\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/runtime.8c98f29b1b2438464dff.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/polyfills.6e046e1f7348145a8892.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/main.e486d78272f65ea053f1.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/api/users/current\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/6.b1a1776ed0e34798262d.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/public/images/users/default-user.png\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/public/images/users/default-user.png\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/6.b1a1776ed0e34798262d.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/5.fa8b2869597fa1e63e40.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/api/users/current\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/5.fa8b2869597fa1e63e40.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/common.a88df0ed7a32e79bec5d.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/8.a57afc8c265fd096e1de.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/common.a88df0ed7a32e79bec5d.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/8.a57afc8c265fd096e1de.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/7.eb9cb0b7d22a2704c2fb.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/9.f6dee5e5db3a8c9f73ef.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/10.2e65401ab95e94ac036e.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/11.df1af5ff48cf0b3aeb43.js\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/api/cars\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/assets/fonts/icomoon/icomoon.ttf?gm5k87\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/7.eb9cb0b7d22a2704c2fb.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/9.f6dee5e5db3a8c9f73ef.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/assets/fonts/icomoon/icomoon.ttf?gm5k87\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/10.2e65401ab95e94ac036e.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/11.df1af5ff48cf0b3aeb43.js\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/api/cars\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/public/images/brands/audi.png\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/public/images/brands/audi.png\n"
+                    },
+                    {
+                      "text": "➡️ Клікаємо на \"Profile\"...\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/api/users/profile\n"
+                    },
+                    {
+                      "text": "⚡ [MOCK] Перехоплено /api/users/profile\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/api/users/profile\n"
+                    },
+                    {
+                      "text": "➡️ [REQUEST] GET https://qauto.forstudy.space/public/images/users/default-user.png\n"
+                    },
+                    {
+                      "text": "🔍 Очікуємо зміну URL...\n"
+                    },
+                    {
+                      "text": "✅ URL змінено!\n"
+                    },
+                    {
+                      "text": "✅ [RESPONSE] 200 https://qauto.forstudy.space/public/images/users/default-user.png\n"
+                    }
+                  ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-03-16T10:07:06.620Z",
+                  "startTime": "2025-03-22T09:42:54.028Z",
                   "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\maryna.bobkova\\Automation\\playwright\\test-results\\tests-profile-Profile-page---mock-API-response-prod\\test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "C:\\Users\\maryna.bobkova\\Automation\\playwright\\test-results\\tests-profile-Profile-page---mock-API-response-prod\\video.webm"
+                    },
                     {
                       "name": "trace",
                       "contentType": "application/zip",
-                      "path": "C:\\Users\\maryna.bobkova\\Automation\\playwright\\test-results\\tests-garage-User-should-see-correct-heading-on-garage-page-prod\\trace.zip"
+                      "path": "C:\\Users\\maryna.bobkova\\Automation\\playwright\\test-results\\tests-profile-Profile-page---mock-API-response-prod\\trace.zip"
                     }
-                  ]
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\maryna.bobkova\\Automation\\playwright\\tests\\profile.spec.js",
+                    "column": 31,
+                    "line": 55
+                  }
                 }
               ],
-              "status": "expected"
+              "status": "unexpected"
             }
           ],
-          "id": "9a36175777fe44cd20df-4f1322e61c5c6ca49811",
-          "file": "tests/garage.spec.js",
-          "line": 3,
+          "id": "a8647b00c872e5f1e2df-1df07cd6a94879692df2",
+          "file": "tests/profile.spec.js",
+          "line": 5,
           "column": 5
         }
       ]
@@ -131,11 +412,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-03-16T10:07:00.762Z",
-    "duration": 8345.892999999982,
-    "expected": 1,
+    "startTime": "2025-03-22T09:42:47.088Z",
+    "duration": 31449.592000000004,
+    "expected": 0,
     "skipped": 0,
-    "unexpected": 0,
+    "unexpected": 1,
     "flaky": 0
   }
 }

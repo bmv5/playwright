@@ -1,0 +1,108 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Profile page - mock API response
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\profile.spec.js:5:5
+
+# Error details
+
+```
+Error: Timed out 5000ms waiting for expect(locator).toHaveText(expected)
+
+Locator: locator('.profile_name')
+Expected string: "John Doe"
+Received string: ""
+Call log:
+  - expect.toHaveText with timeout 5000ms
+  - waiting for locator('.profile_name')
+    9 × locator resolved to <p _ngcontent-teg-c68="" class="profile_name display-4"></p>
+      - unexpected value ""
+
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\profile.spec.js:42:29
+```
+
+# Page snapshot
+
+```yaml
+- banner:
+  - link:
+    - img
+  - navigation:
+    - link "Garage"
+    - link "Fuel expenses"
+    - link "Instructions"
+  - button "User photo My profile":
+    - img "User photo"
+    - text: My profile
+- navigation:
+  - link " Garage"
+  - link " Fuel expenses"
+  - link " Instructions"
+  - link " Profile"
+  - link " Settings"
+  - text:  Log out
+- heading "Profile" [level=1]
+- button "Edit profile"
+- img "User photo"
+- paragraph
+- contentinfo:
+  - paragraph: © 2021 Hillel IT school
+  - paragraph: Hillel auto developed in Hillel IT school for educational purposes of QA courses.
+  - link:
+    - img
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from '@playwright/test';
+   2 |
+   3 | test.use({ storageState: 'storageState.json' });
+   4 |
+   5 | test('Profile page - mock API response', async ({ page }) => {
+   6 |   // 🔍 Логуємо ВСІ запити після переходу
+   7 |   page.on('request', (request) => console.log(`➡️ [REQUEST] ${request.url()}`));
+   8 |   page.on('response', async (response) => {
+   9 |     console.log(`✅ [RESPONSE] ${response.url()} -> ${response.status()}`);
+  10 |   });
+  11 |
+  12 |   // ✅ Відкриваємо гараж
+  13 |   console.log('➡️ Переходимо в Garage...');
+  14 |   await page.goto('https://qauto.forstudy.space/panel/garage', { waitUntil: 'networkidle' });
+  15 |
+  16 |   // ✅ Натискаємо "Profile"
+  17 |   console.log('➡️ Клікаємо на "Profile"...');
+  18 |   const profileButton = page.locator('.sidebar_btn.-profile');
+  19 |   await profileButton.waitFor({ state: 'visible', timeout: 5000 });
+  20 |   await profileButton.click();
+  21 |
+  22 |   // ✅ Очікуємо, що ми на сторінці профілю
+  23 |   console.log('➡️ Очікуємо URL профілю...');
+  24 |   await page.waitForURL('https://qauto.forstudy.space/panel/profile');
+  25 |
+  26 |   // ✅ Підміна API-запиту
+  27 |   await page.route('**/api/users/profile', async (route) => {
+  28 |     console.log('⚡ [MOCK] Перехоплено /api/users/profile');
+  29 |     await route.fulfill({
+  30 |       status: 200,
+  31 |       headers: { 'Content-Type': 'application/json' },
+  32 |       json: { id: 123, name: 'John Doe', email: 'john.doe@example.com' },
+  33 |     });
+  34 |   });
+  35 |
+  36 |   // ✅ Перезавантажуємо сторінку (якщо API кешується)
+  37 |   await page.reload({ waitUntil: 'networkidle' });
+  38 |
+  39 |   // ✅ Очікуємо оновлення UI
+  40 |   console.log('✅ [SUCCESS] Очікуємо, що ім\'я відобразиться...');
+  41 |   const profileName = page.locator('.profile_name');
+> 42 |   await expect(profileName).toHaveText('John Doe', { timeout: 5000 });
+     |                             ^ Error: Timed out 5000ms waiting for expect(locator).toHaveText(expected)
+  43 | });
+  44 |
+```

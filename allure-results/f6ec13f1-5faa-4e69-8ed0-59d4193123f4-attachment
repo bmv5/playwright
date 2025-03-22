@@ -1,0 +1,111 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Profile page - mock API response
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\profile.spec.js:5:5
+
+# Error details
+
+```
+Error: page.reload: Test ended.
+Call log:
+  - waiting for navigation until "networkidle"
+    - navigated to "https://qauto.forstudy.space/panel/profile"
+
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\profile.spec.js:43:14
+```
+
+# Page snapshot
+
+```yaml
+- banner:
+  - link:
+    - img
+  - navigation:
+    - link "Garage"
+    - link "Fuel expenses"
+    - link "Instructions"
+  - button "User photo My profile":
+    - img "User photo"
+    - text: My profile
+- navigation:
+  - link " Garage"
+  - link " Fuel expenses"
+  - link " Instructions"
+  - link " Profile"
+  - link " Settings"
+  - text:  Log out
+- heading "Profile" [level=1]
+- button "Edit profile"
+- img "User photo"
+- paragraph
+- contentinfo:
+  - paragraph: © 2021 Hillel IT school
+  - paragraph: Hillel auto developed in Hillel IT school for educational purposes of QA courses.
+  - link:
+    - img
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from '@playwright/test';
+   2 |
+   3 | test.use({ storageState: 'storageState.json' });
+   4 |
+   5 | test('Profile page - mock API response', async ({ page }) => {
+   6 |   // 🔍 Логуємо ВСІ запити після переходу
+   7 |   page.on('request', (request) => console.log(`➡️ [REQUEST] ${request.url()}`));
+   8 |   page.on('response', async (response) => {
+   9 |     if (response.url().includes('/api/users/profile')) {
+  10 |       console.log(`✅ [RESPONSE] ${response.url()} -> ${response.status()}`);
+  11 |       console.log('📢 Тіло відповіді:', await response.json());
+  12 |     }
+  13 |   });
+  14 |
+  15 |   // ✅ Відкриваємо гараж
+  16 |   console.log('➡️ Переходимо в Garage...');
+  17 |   await page.goto('https://qauto.forstudy.space/panel/garage', { waitUntil: 'networkidle' });
+  18 |
+  19 |   // ✅ Натискаємо "Profile"
+  20 |   console.log('➡️ Клікаємо на "Profile"...');
+  21 |   const profileButton = page.locator('.sidebar_btn.-profile');
+  22 |   await profileButton.waitFor({ state: 'visible', timeout: 5000 });
+  23 |   await profileButton.click();
+  24 |
+  25 |   // ✅ Очікуємо URL профілю
+  26 |   console.log('➡️ Очікуємо URL профілю...');
+  27 |   await page.waitForURL('https://qauto.forstudy.space/panel/profile');
+  28 |
+  29 |   // ✅ Підміна API-запиту
+  30 |   await page.route('**/api/users/profile', async (route) => {
+  31 |     console.log('⚡ [MOCK] Перехоплено /api/users/profile');
+  32 |     const mockResponse = { id: 123, name: 'John Doe', email: 'john.doe@example.com' };
+  33 |     console.log('📢 Мок-відповідь:', JSON.stringify(mockResponse, null, 2));
+  34 |     
+  35 |     await route.fulfill({
+  36 |       status: 200,
+  37 |       headers: { 'Content-Type': 'application/json' },
+  38 |       json: mockResponse,
+  39 |     });
+  40 |   });
+  41 |
+  42 |   // ✅ Перезавантажуємо сторінку після переходу (якщо дані не з’являються)
+> 43 |   await page.reload({ waitUntil: 'networkidle' });
+     |              ^ Error: page.reload: Test ended.
+  44 |
+  45 |   // ✅ Очікуємо оновлення UI
+  46 |   const profileName = page.locator('.profile_name');
+  47 |
+  48 |   console.log('🔍 Очікуємо текст "John Doe"...');
+  49 |   await expect(profileName).toHaveText('John Doe', { timeout: 10000 });
+  50 |
+  51 |   console.log('✅ [SUCCESS] Ім\'я оновилося!');
+  52 | });
+  53 |
+```

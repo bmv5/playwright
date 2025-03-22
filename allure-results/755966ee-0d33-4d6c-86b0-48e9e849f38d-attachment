@@ -1,0 +1,86 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Profile page - mock API response
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\profile.spec.js:3:5
+
+# Error details
+
+```
+Error: page.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for locator('a[href="/panel/profile"]')
+
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\profile.spec.js:18:14
+```
+
+# Page snapshot
+
+```yaml
+- banner:
+  - link:
+    - img
+  - navigation:
+    - link "Home"
+    - button "About"
+    - button "Contacts"
+  - button "Guest log in"
+  - button "Sign In"
+- heading "Do more!" [level=1]
+- paragraph: With the help of the Hillel auto project, you will have the opportunity to get hands-on experience in manual testing.
+- button "Sign up"
+- img "Instructions"
+- paragraph: Log fuel expenses
+- paragraph: Keep track of your replacement schedule and plan your vehicle maintenance expenses in advance.
+- img "Instructions"
+- paragraph: Instructions and manuals
+- paragraph: Watch over 100 instructions and repair your car yourself.
+- heading "Contacts" [level=2]
+- link ""
+- link ""
+- link ""
+- link ""
+- link ""
+- link "ithillel.ua"
+- link "support@ithillel.ua"
+- contentinfo:
+  - paragraph: © 2021 Hillel IT school
+  - paragraph: Hillel auto developed in Hillel IT school for educational purposes of QA courses.
+  - link:
+    - img
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from '@playwright/test';
+   2 |
+   3 | test('Profile page - mock API response', async ({ page }) => {
+   4 |   // Авторизація користувача через storageState.json
+   5 |   await page.goto('/panel/garage');
+   6 |
+   7 |   // Перехоплення та підміна відповіді для запиту профілю
+   8 |   await page.route('**/api/profile', async (route) => {
+   9 |     const mockedResponse = {
+  10 |       id: 123,
+  11 |       name: 'John Doe',  // Підмінене ім'я
+  12 |       email: 'john.doe@example.com',
+  13 |     };
+  14 |     await route.fulfill({ json: mockedResponse });
+  15 |   });
+  16 |
+  17 |   // Перехід на сторінку профілю
+> 18 |   await page.click('a[href="/panel/profile"]');
+     |              ^ Error: page.click: Test timeout of 30000ms exceeded.
+  19 |
+  20 |   // Перевірка, що відображене ім'я збігається з підміною
+  21 |   const profileName = page.locator('.profile_name');
+  22 |   await expect(profileName).toHaveText('John Doe');
+  23 | });
+  24 |
+```
