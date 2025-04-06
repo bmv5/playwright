@@ -1,0 +1,115 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: ✅ API: Успішне створення машини
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\cars.spec.js:27:5
+
+# Error details
+
+```
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 201
+Received: 400
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\cars.spec.js:39:31
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect, request } from '@playwright/test';
+   2 |
+   3 | let apiContext;
+   4 | let authToken;
+   5 |
+   6 | test.beforeAll(async () => {
+   7 |     apiContext = await request.newContext();
+   8 |
+   9 |     // 🔹 Виконуємо авторизацію
+  10 |     const loginResponse = await apiContext.post('https://qauto.forstudy.space/api/auth/signin', {
+  11 |         data: {
+  12 |             email: 'test1@example.com',
+  13 |             password: 'Test1234',
+  14 |             remember: false,
+  15 |         },
+  16 |     });
+  17 |
+  18 |     expect(loginResponse.status()).toBe(200); // Переконуємося, що запит успішний
+  19 |
+  20 |     const loginData = await loginResponse.json();
+  21 |     authToken = loginData.token; // Зберігаємо отриманий токен
+  22 |
+  23 |     console.log('✅ Авторизація пройдена. Отриманий токен:', authToken);
+  24 | });
+  25 |
+  26 | // ✅ **Позитивний тест: успішне створення машини**
+  27 | test('✅ API: Успішне створення машини', async () => {
+  28 |     const response = await apiContext.post('https://qauto.forstudy.space/api/cars', {
+  29 |         headers: {
+  30 |             'Authorization': `Bearer ${authToken}`, // Додаємо токен
+  31 |         },
+  32 |         data: {
+  33 |             carBrandId: 2,
+  34 |             carModelId: 8,
+  35 |             mileage: 123,
+  36 |         },
+  37 |     });
+  38 |
+> 39 |     expect(response.status()).toBe(201); // Код 201 означає "створено"
+     |                               ^ Error: expect(received).toBe(expected) // Object.is equality
+  40 |     const responseBody = await response.json();
+  41 |     console.log('🚗 Машина створена:', responseBody);
+  42 | });
+  43 |
+  44 | // ❌ **Негативний тест 1: створення машини без авторизації**
+  45 | test('❌ API: Неможливо створити машину без авторизації', async () => {
+  46 |   // Створюємо новий API контекст без токена
+  47 |   const unauthContext = await request.newContext();
+  48 |
+  49 |   // Виконуємо запит БЕЗ заголовка Authorization
+  50 |   const response = await unauthContext.post('https://qauto.forstudy.space/api/cars', {
+  51 |       data: {
+  52 |           carBrandId: 2,
+  53 |           carModelId: 8,
+  54 |           mileage: 123,
+  55 |       },
+  56 |   });
+  57 |
+  58 |   console.log(`📜 Статус відповіді: ${response.status()}`);
+  59 |   console.log(`📜 Тіло відповіді:`, await response.json());
+  60 |
+  61 |   // Очікуємо, що сервер поверне 401 (Unauthorized)
+  62 |   expect(response.status()).toBe(401);
+  63 |
+  64 |   // Закриваємо новий API контекст
+  65 |   await unauthContext.dispose();
+  66 | });
+  67 |
+  68 |
+  69 | // ❌ **Негативний тест 2: створення машини з некоректними даними**
+  70 | test('❌ API: Неможливо створити машину з некоректними даними', async () => {
+  71 |     const response = await apiContext.post('https://qauto.forstudy.space/api/cars', {
+  72 |         headers: {
+  73 |             'Authorization': `Bearer ${authToken}`,
+  74 |         },
+  75 |         data: {
+  76 |             carBrandId: 'wrong', // Некоректний ID
+  77 |             carModelId: null,    // Некоректний ID
+  78 |             mileage: -100,       // Від'ємний пробіг
+  79 |         },
+  80 |     });
+  81 |
+  82 |     expect(response.status()).toBe(400); // Очікуємо 400 Bad Request
+  83 |     console.log('⚠️ Некоректні дані, машина не створена.');
+  84 | });
+  85 |
+  86 | test.afterAll(async () => {
+  87 |     await apiContext.dispose();
+  88 | });
+  89 |
+```

@@ -1,0 +1,3 @@
+✅ Авторизація пройдена. Отриманий токен: undefined
+📜 Статус відповіді: 401
+📜 Тіло відповіді: { status: 'error', message: 'Not authenticated' }
