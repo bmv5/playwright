@@ -1,0 +1,87 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: User should see correct heading on garage page
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\garage.spec.js:3:5
+
+# Error details
+
+```
+Error: Timed out 5000ms waiting for expect(locator).toHaveText(expected)
+
+Locator: locator('h1')
+Expected string: "Garage"
+Received string: "Do more!"
+Call log:
+  - expect.toHaveText with timeout 5000ms
+  - waiting for locator('h1')
+    8 × locator resolved to <h1 _ngcontent-epj-c63="" class="hero-descriptor_title display-2">Do more!</h1>
+      - unexpected value "Do more!"
+
+    at GaragePage.verifyGaragePage (C:\Users\maryna.bobkova\Automation\playwright\pages\garagePage.js:14:37)
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\garage.spec.js:5:24
+```
+
+# Page snapshot
+
+```yaml
+- banner:
+  - link:
+    - img
+  - navigation:
+    - link "Home"
+    - button "About"
+    - button "Contacts"
+  - button "Guest log in"
+  - button "Sign In"
+- heading "Do more!" [level=1]
+- paragraph: With the help of the Hillel auto project, you will have the opportunity to get hands-on experience in manual testing.
+- button "Sign up"
+- img "Instructions"
+- paragraph: Log fuel expenses
+- paragraph: Keep track of your replacement schedule and plan your vehicle maintenance expenses in advance.
+- img "Instructions"
+- paragraph: Instructions and manuals
+- paragraph: Watch over 100 instructions and repair your car yourself.
+- heading "Contacts" [level=2]
+- link ""
+- link ""
+- link ""
+- link ""
+- link ""
+- link "ithillel.ua"
+- link "support@ithillel.ua"
+- contentinfo:
+  - paragraph: © 2021 Hillel IT school
+  - paragraph: Hillel auto developed in Hillel IT school for educational purposes of QA courses.
+  - link:
+    - img
+```
+
+# Test source
+
+```ts
+   1 | import { expect } from '@playwright/test';
+   2 |
+   3 | export class GaragePage {
+   4 |   constructor(page) {
+   5 |     this.page = page;
+   6 |     this.garageHeader = page.locator('h1'); // Оновлений локатор для заголовка "Garage"
+   7 |   }
+   8 |
+   9 |   async open() {
+  10 |     await this.page.goto('/panel/garage');
+  11 |   }
+  12 |
+  13 |   async verifyGaragePage() {
+> 14 |     await expect(this.garageHeader).toHaveText('Garage'); // Оновлена перевірка
+     |                                     ^ Error: Timed out 5000ms waiting for expect(locator).toHaveText(expected)
+  15 |   }
+  16 | }
+  17 |
+```

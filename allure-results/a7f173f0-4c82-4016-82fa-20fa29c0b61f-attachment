@@ -1,0 +1,131 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Profile page - mock API response
+- Location: C:\Users\maryna.bobkova\Automation\playwright\tests\profile.spec.js:5:5
+
+# Error details
+
+```
+TimeoutError: locator.waitFor: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator('.sidebar_btn.-profile') to be visible
+
+    at C:\Users\maryna.bobkova\Automation\playwright\tests\profile.spec.js:43:23
+```
+
+# Page snapshot
+
+```yaml
+- banner:
+  - link:
+    - img
+  - navigation:
+    - link "Home"
+    - button "About"
+    - button "Contacts"
+  - button "Guest log in"
+  - button "Sign In"
+- heading "Do more!" [level=1]
+- paragraph: With the help of the Hillel auto project, you will have the opportunity to get hands-on experience in manual testing.
+- button "Sign up"
+- img "Instructions"
+- paragraph: Log fuel expenses
+- paragraph: Keep track of your replacement schedule and plan your vehicle maintenance expenses in advance.
+- img "Instructions"
+- paragraph: Instructions and manuals
+- paragraph: Watch over 100 instructions and repair your car yourself.
+- heading "Contacts" [level=2]
+- link ""
+- link ""
+- link ""
+- link ""
+- link ""
+- link "ithillel.ua"
+- link "support@ithillel.ua"
+- contentinfo:
+  - paragraph: © 2021 Hillel IT school
+  - paragraph: Hillel auto developed in Hillel IT school for educational purposes of QA courses.
+  - link:
+    - img
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from '@playwright/test';
+   2 |
+   3 | test.use({ storageState: 'storageState.json' });
+   4 |
+   5 | test('Profile page - mock API response', async ({ page }) => {
+   6 |   // Логуємо всі запити та відповіді
+   7 |   page.on('request', (request) => {
+   8 |     console.log(`➡️ [REQUEST] ${request.method()} ${request.url()}`);
+   9 |   });
+  10 |   page.on('response', async (response) => {
+  11 |     console.log(`✅ [RESPONSE] ${response.status()} ${response.url()}`);
+  12 |   });
+  13 |
+  14 |   // ✅ Перехоплення API `/api/users/profile`
+  15 |   await page.route('**/api/users/profile', async (route) => {
+  16 |     console.log('⚡ [MOCK] Перехоплено /api/users/profile');
+  17 |     await route.fulfill({
+  18 |       status: 200,
+  19 |       headers: { 'Content-Type': 'application/json' },
+  20 |       json: {
+  21 |         status: "ok",
+  22 |         data: {
+  23 |           userId: 123,
+  24 |           photoFilename: "default-user.png",
+  25 |           name: "John",
+  26 |           lastName: "Doe"
+  27 |         }
+  28 |       }
+  29 |     });
+  30 |   });
+  31 |
+  32 |   // ✅ Переходимо в Garage
+  33 |   console.log('➡️ Переходимо в Garage...');
+  34 |   await page.goto('https://qauto.forstudy.space/panel/garage', { waitUntil: 'networkidle', timeout: 10000 });
+  35 |
+  36 |   // ✅ Очищуємо кеш і перезавантажуємо сторінку
+  37 |   console.log('🔄 Перезавантажуємо сторінку для оновлення API-запиту...');
+  38 |   await page.reload({ waitUntil: 'networkidle' });
+  39 |
+  40 |   // ✅ Натискаємо "Profile"
+  41 |   console.log('➡️ Клікаємо на "Profile"...');
+  42 |   const profileButton = page.locator('.sidebar_btn.-profile');
+> 43 |   await profileButton.waitFor({ state: 'visible', timeout: 5000 });
+     |                       ^ TimeoutError: locator.waitFor: Timeout 5000ms exceeded.
+  44 |   await profileButton.click();
+  45 |
+  46 |   // ✅ Очікуємо зміну URL
+  47 |   console.log('🔍 Очікуємо зміну URL...');
+  48 |   await page.waitForURL('**/panel/profile', { timeout: 5000 });
+  49 |   console.log('✅ URL змінено!');
+  50 |
+  51 |   // ✅ Додаємо невелику затримку перед чекаєм на відповідь
+  52 |   await page.waitForTimeout(500);  // Затримка 0.5 секунди перед виконанням очікування
+  53 |
+  54 |   // ✅ Додаємо логування перед очікуванням відповіді
+  55 |   const response = await page.waitForResponse((res) => {
+  56 |     console.log(`🔎 Перевіряємо: ${res.url()} -> ${res.status()}`);
+  57 |     return res.url().includes('/api/users/profile') && res.status() === 200;  // Правильний код статусу 200
+  58 |   }, { timeout: 20000 });
+  59 |
+  60 |   console.log('✅ Отримано відповідь від API:', await response.json());
+  61 |
+  62 |   // ✅ Очікуємо оновлення UI
+  63 |   console.log('🔍 Очікуємо появу імені...');
+  64 |   const profileName = page.locator('.profile_name');
+  65 |   await expect(profileName).toHaveText('John Doe', { timeout: 10000 });
+  66 |
+  67 |   console.log(`✅ [SUCCESS] Ім'я оновилося!`);
+  68 | });
+  69 |
+```
