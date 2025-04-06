@@ -37,6 +37,7 @@ export default defineConfig({
     ['list'],
     ['json', {  outputFile: 'test-results.json' }],
     ['dot'],
-    ['allure-playwright']
+    ['allure-playwright'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }]  // ⬅️ Додано для GitHub
   ],
 });
